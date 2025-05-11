@@ -1,29 +1,33 @@
 package GDGoC_study.hello_spring.Controller;
 
+import GDGoC_study.hello_spring.domain.User;
+import GDGoC_study.hello_spring.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
-    @GetMapping
-    public String getAllUsers() {
-        return "모든 사용자 조회";
+    private final UserService userService;
+
+    // 회원가입 요청
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestParam String email,
+                                               @RequestParam String nickname,
+                                               @RequestParam String password) {
+        userService.registerUser(email, nickname, password);
+        return ResponseEntity.ok("회원가입 완료!");
     }
 
-    @PostMapping
-    public String createUser(@RequestBody String userData) {
-        return "사용자 생성: " + userData;
-    }
-
+    // 사용자 수정 요청
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, @RequestBody String userData) {
-        return "사용자 수정: ID " + id + ", 내용: " + userData;
+    public ResponseEntity<String> updateUser(@PathVariable Long id,
+                                             @RequestParam String nickname,
+                                             @RequestParam String password) {
+        userService.updateUser(id, nickname, password);
+        return ResponseEntity.ok("수정 완료!");
     }
-
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        return "사용자 삭제: ID " + id;
-    }
-
 }
